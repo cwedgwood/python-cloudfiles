@@ -166,7 +166,7 @@ class Connection(object):
         performs an http request.
         """
         path = '/%s/%s' % \
-                 (self.uri.rstrip('/'), '/'.join([quote(i) for i in path]))
+                 (self.uri.rstrip('/'), '/'.join([quote(i.encode('utf-8')) for i in path]))
 
         if isinstance(parms, dict) and parms:
             query_args = \
