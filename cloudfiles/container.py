@@ -354,8 +354,15 @@ class Container(object):
                  keys "name", "hash", "size", and "type"
         """
         parms['format'] = 'json'
-        resp = self._list_objects_raw(
-            prefix, limit, marker, path, delimiter, **parms)
+        try:
+            resp = self._list_objects_raw(
+                prefix, limit, marker, path, delimiter, **parms)
+        except ResponseError, e:
+            # container visible at account level but can't enumerate
+            # assume this is a transient error and return nothing
+            if e.status == 404:
+                return {}
+            raise
         return json_loads(resp)
 
     @requires_name(InvalidContainerName)
